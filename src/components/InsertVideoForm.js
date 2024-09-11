@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios'; 
 
 const InsertVideo = () => {
   const [title, setTitle] = useState('');
@@ -9,10 +10,29 @@ const InsertVideo = () => {
     setVideoFile(e.target.files[0]);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // form submission logic
-    console.log({ title, description, videoFile });
+
+    if (!videoFile) {
+      alert('Please select a video file');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('videoFile', videoFile);
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/videos/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      console.log(response.data); // Handle success response
+    } catch (error) {
+      console.error('Error uploading video:', error.response?.data?.message || error.message);
+    }
   };
 
   return (
@@ -50,7 +70,6 @@ const InsertVideo = () => {
             />
           </div>
 
-   
           <div className="mb-4">
             <label className="block text-gray-600 text-sm font-medium mb-2" htmlFor="videoFile">
               Upload Video
@@ -65,7 +84,6 @@ const InsertVideo = () => {
             />
           </div>
 
-    
           <button
             type="submit"
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -79,3 +97,4 @@ const InsertVideo = () => {
 };
 
 export default InsertVideo;
+
