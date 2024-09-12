@@ -1,12 +1,15 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'http://3.110.132.203:3000';
 
 // Login function
 export const login = async (email, password) => {
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
     console.log('login successfull')
+    const token = response.data.token; 
+    localStorage.setItem('token', token);
+    
     return response.data; // { message: 'Login successful' }
   } catch (error) {
     console.error('Login error:', error.response?.data?.message || error.message);

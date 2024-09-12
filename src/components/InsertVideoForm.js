@@ -5,6 +5,7 @@ const InsertVideo = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [videoFile, setVideoFile] = useState(null);
+  const token = localStorage.getItem('token'); 
 
   const handleFileChange = (e) => {
     setVideoFile(e.target.files[0]);
@@ -24,9 +25,10 @@ const InsertVideo = () => {
     formData.append('videoFile', videoFile);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/videos/upload', formData, {
+      const response = await axios.post('http://3.110.132.203:3000/upload', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}` 
         }
       });
       console.log(response.data); // Handle success response
