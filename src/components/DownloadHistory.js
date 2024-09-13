@@ -32,7 +32,7 @@ const DownloadHistory = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center">
+    <div className="min-h-screen bg-purple-100 flex justify-center">
       <div className="w-full max-w-5xl p-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Download History</h2>
 
