@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import axios from 'axios';
-
+import BASE_URL from '../config'; 
 
 
 const DownloadHistory = () => {
@@ -10,7 +10,7 @@ const DownloadHistory = () => {
     const fetchDownloadedVideos = async () => {
       try {
         const token = localStorage.getItem('token'); // Retrieve the token from local storage
-        const response = await axios.get('http://3.110.132.203:3000/user/get_downloads', {
+        const response = await axios.get(`${BASE_URL}/get_downloads`, {
           headers: {
             'token': `${token}`
           }

@@ -1,5 +1,6 @@
 import React,{useEffect, useState} from 'react';
 import axios from 'axios';
+import BASE_URL from '../config'; 
 
 
 const ViewVideos = () => {
@@ -40,7 +41,7 @@ const ViewVideos = () => {
       
       // Make sure the response is in blob format
       const response = await axios.post(
-        'http://3.110.132.203:3000/convert',
+        `${BASE_URL}/convert`,
         { video_id, type }, // Post data here
         {
           headers: {

@@ -1,6 +1,7 @@
 import axios from 'axios';
+import BASE_URL from '../config'; 
 
-const API_URL = 'http://3.110.132.203:3000';
+const API_URL = `${BASE_URL}`;
 
 // Login function
 export const login = async (email, password) => {

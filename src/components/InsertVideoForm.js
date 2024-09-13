@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
+import BASE_URL from '../config'; 
 
 const InsertVideo = () => {
   const [title, setTitle] = useState('');
@@ -28,7 +29,7 @@ const InsertVideo = () => {
     formData.append('file', videoFile);
     console.log('detail',name, title, videoFile )
     try {
-      const response = await axios.post('http://3.110.132.203:3000/upload', formData, {
+      const response = await axios.post(`${BASE_URL}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'token': `${token}` 
@@ -49,7 +50,7 @@ const InsertVideo = () => {
     const getVideoName = async () => {
       try {
         const token = localStorage.getItem('token'); // Retrieve the token from local storage
-        const response = await axios.get('http://3.110.132.203:3000/user/get_video_name', {
+        const response = await axios.get(`${BASE_URL}/user/get_video_name`, {
           headers: {
             'token': `${token}`
           }
