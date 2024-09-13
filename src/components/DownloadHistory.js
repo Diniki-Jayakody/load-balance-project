@@ -10,7 +10,7 @@ const DownloadHistory = () => {
     const fetchDownloadedVideos = async () => {
       try {
         const token = localStorage.getItem('token'); // Retrieve the token from local storage
-        const response = await axios.get(`${BASE_URL}/get_downloads`, {
+        const response = await axios.get(`${BASE_URL}/user/get_downloads`, {
           headers: {
             'token': `${token}`
           }
