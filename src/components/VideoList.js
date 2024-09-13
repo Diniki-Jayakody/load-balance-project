@@ -5,6 +5,7 @@ import axios from 'axios';
 const ViewVideos = () => {
   const [videos, setVideos] = useState([]);
   const [videoUrl, setVideoUrl] = useState(null); 
+  const [conversionTime, setConversionTime] = useState(null);
 
   useEffect(() => {
     const fetchVideos = async () => {
@@ -34,6 +35,8 @@ const ViewVideos = () => {
     try {
       const token = localStorage.getItem('token'); // Retrieve the token from local storage
       const type = 'mp4';
+
+      const startTime = Date.now();
       
       // Make sure the response is in blob format
       const response = await axios.post(
@@ -46,6 +49,12 @@ const ViewVideos = () => {
           responseType: 'blob', // Ensure we get a Blob response
         }
       );
+      const endTime = Date.now();
+      
+      // Calculate time difference in seconds
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+      setConversionTime(timeTaken);
+
 
       // Convert response data to Blob and create a URL
       const videoBlob = new Blob([response.data], { type: 'video/mp4' });
@@ -65,6 +74,9 @@ const ViewVideos = () => {
     <div className="min-h-screen bg-gray-100 flex justify-center">
       <div className="w-full max-w-6xl p-8">
         <h2 className="text-2xl font-semibold text-gray-700 mb-6 text-center">Your Videos</h2>
+        {conversionTime && (
+        <p style={{color:'red', padding:'3px'}}>Time taken for conversion: {conversionTime} seconds</p>
+      )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {videos.map((video) => (

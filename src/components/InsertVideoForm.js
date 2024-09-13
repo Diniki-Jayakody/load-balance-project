@@ -6,6 +6,7 @@ const InsertVideo = () => {
   const [name, setName] = useState('');
   const [videoFile, setVideoFile] = useState(null);
   const token = localStorage.getItem('token'); 
+  const [responseTime, setResponseTime] = useState(null);
 
   const handleFileChange = (e) => {
     setVideoFile(e.target.files[0]);
@@ -19,6 +20,8 @@ const InsertVideo = () => {
       return;
     }
 
+    const startTime = Date.now();
+
     const formData = new FormData();
     formData.append('name', name);
     formData.append('title', title);
@@ -31,6 +34,12 @@ const InsertVideo = () => {
           'token': `${token}` 
         }
       });
+      const endTime = Date.now();
+      
+      // Calculate time difference in seconds
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+      setResponseTime(timeTaken);
+
       console.log(response.data); // Handle success response
     } catch (error) {
       console.error('Error uploading video:', error.response?.data?.message || error.message);
@@ -59,6 +68,10 @@ const InsertVideo = () => {
     <div className="min-h-screen bg-gray-100 flex justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
         <h2 className="text-2xl font-semibold text-gray-700 text-center">Insert Video</h2>
+        {responseTime && (
+        <p style={{color:'red', padding:'3px'}}>Time taken for uploading: {responseTime} seconds</p>
+      )}
+
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="mb-4">
             <label className="block text-gray-600 text-sm font-medium mb-2" htmlFor="title">
