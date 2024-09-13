@@ -30,29 +30,34 @@ const ViewVideos = () => {
     fetchVideos();
   }, []);
 
-  const convertVideo = async(video_id)=>{
+  const convertVideo = async (video_id) => {
     try {
-      
       const token = localStorage.getItem('token'); // Retrieve the token from local storage
-      const type='mp4';
+      const type = 'mp4';
+      
+      // Make sure the response is in blob format
       const response = await axios.post(
         'http://3.110.132.203:3000/convert',
-        { video_id, type}, // Post data here
+        { video_id, type }, // Post data here
         {
           headers: {
-            'token': `${token}`
-          }
+            'token': `${token}`,
+          },
+          responseType: 'blob', // Ensure we get a Blob response
         }
       );
+
+      // Convert response data to Blob and create a URL
       const videoBlob = new Blob([response.data], { type: 'video/mp4' });
       const videoUrl = URL.createObjectURL(videoBlob); // Create a URL for the blob
+
       setVideoUrl(videoUrl); // Store the video URL in state
       console.log('Video Blob URL:', videoUrl);
 
     } catch (error) {
-      console.error('Error fetching videos:', error.response?.data?.message || error.message);
+      console.error('Error converting video:', error.response?.data?.message || error.message);
     }
-  }
+  };
 
 
 
