@@ -17,7 +17,7 @@ const DownloadHistory = () => {
         });
         const videosArray = response.data.data?.data_ || [];
         if (Array.isArray(videosArray)) {
-          setVideos(videosArray);  // Set the videos array in state
+          setVideos(videosArray);
         } else {
           console.error('Expected an array, but got:', videosArray);
         }

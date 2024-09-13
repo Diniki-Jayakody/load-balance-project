@@ -11,7 +11,7 @@ export const login = async (email, password) => {
     const token = response.data.data.token; 
     localStorage.setItem('token', token);
     
-    return response.data; // { message: 'Login successful' }
+    return response.data; 
   } catch (error) {
     console.error('Login error:', error.response?.data?.message || error.message);
     throw error;
@@ -23,7 +23,7 @@ export const register = async (name, email, password) => {
   try {
     const response = await axios.post(`${API_URL}/register`, { name, email, password });
     console.log('registration successfull')
-    return response.data; // { message: 'Registration successful' }
+    return response.data;
   } catch (error) {
     console.error('Registration error:', error.response?.data?.message || error.message);
     throw error;

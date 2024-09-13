@@ -16,7 +16,6 @@ const Register = () => {
   const handleRegister = async (e) => {
   e.preventDefault(); 
 
-  // Check if passwords match before making API call
   if (password !== confirmPassword) {
     setError('Passwords do not match');
     setSuccess('');
@@ -25,7 +24,7 @@ const Register = () => {
 
   try {
     const response = await register(name.trim(), email.trim(), password.trim());
-    setSuccess(response.data); // Assume response has a message
+    setSuccess(response.data); 
     setError('');
     alert('Successfully Registered!')
     navigate('/'); 

@@ -20,7 +20,7 @@ const Login = () => {
       navigate('/landing')
     } catch (error) {
       setError(error.response?.data?.message || 'Login failed');
-      setSuccess(null); // Clear any previous success messages
+      setSuccess(null); 
     }
   };
 
