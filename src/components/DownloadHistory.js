@@ -1,12 +1,36 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
+import axios from 'axios';
 
-const downloadHistory = [
-  { id: 1, title: 'Sample Video 1', status: 'Success', date: '2024-09-10 14:32' },
-  { id: 2, title: 'Sample Video 2', status: 'Crashed', date: '2024-09-10 12:45' },
-  { id: 3, title: 'Sample Video 3', status: 'Success', date: '2024-09-09 18:00' },
-];
+
 
 const DownloadHistory = () => {
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    const fetchDownloadedVideos = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Retrieve the token from local storage
+        const response = await axios.get('http://3.110.132.203:3000/user/get_downloads', {
+          headers: {
+            'token': `${token}`
+          }
+        });
+        const videosArray = response.data.data?.data_ || [];
+        if (Array.isArray(videosArray)) {
+          setVideos(videosArray);  // Set the videos array in state
+        } else {
+          console.error('Expected an array, but got:', videosArray);
+        }
+        console.log('videos', videos)
+      } catch (error) {
+        console.error('Error fetching videos:', error.response?.data?.message || error.message);
+      }
+    };
+    
+    fetchDownloadedVideos();
+  }, []);
+
+
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center">
       <div className="w-full max-w-5xl p-8">
@@ -16,25 +40,19 @@ const DownloadHistory = () => {
           <table className="min-w-full bg-white rounded-lg shadow-lg">
             <thead>
               <tr>
-                <th className="text-left px-6 py-4 text-gray-600 font-semibold">Video Title</th>
-                <th className="text-left px-6 py-4 text-gray-600 font-semibold">Status</th>
+                <th className="text-left px-6 py-4 text-gray-600 font-semibold">Video ID</th>
+                <th className="text-left px-6 py-4 text-gray-600 font-semibold">User ID</th>
                 <th className="text-left px-6 py-4 text-gray-600 font-semibold">Date</th>
+                <th className="text-left px-6 py-4 text-gray-600 font-semibold">Type</th>
               </tr>
             </thead>
             <tbody>
-              {downloadHistory.map((entry) => (
+              {videos.map((entry) => (
                 <tr key={entry.id} className="border-t">
-                  <td className="px-6 py-4 text-gray-800">{entry.title}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`px-2 py-1 text-sm rounded-full font-semibold ${
-                        entry.status === 'Success' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
-                      }`}
-                    >
-                      {entry.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{entry.date}</td>
+                  <td className="px-6 py-4 text-gray-800">{entry.video_id}</td>
+                  <td className="px-6 py-4 text-gray-800">{entry.user_id}</td>
+                  <td className="px-6 py-4 text-gray-600">{new Date(entry.time_stamp/1000).toLocaleString()}</td>
+                  <td className="px-6 py-4">{entry.download_type}</td>
                 </tr>
               ))}
             </tbody>

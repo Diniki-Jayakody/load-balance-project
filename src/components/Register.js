@@ -27,6 +27,7 @@ const Register = () => {
     const response = await register(name.trim(), email.trim(), password.trim());
     setSuccess(response.data); // Assume response has a message
     setError('');
+    alert('Successfully Registered!')
     navigate('/'); 
   } catch (error) {
     setError('Registration failed');

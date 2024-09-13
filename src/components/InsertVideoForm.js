@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'; 
 
 const InsertVideo = () => {
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState('');
   const [videoFile, setVideoFile] = useState(null);
   const token = localStorage.getItem('token'); 
 
@@ -20,15 +20,15 @@ const InsertVideo = () => {
     }
 
     const formData = new FormData();
+    formData.append('name', name);
     formData.append('title', title);
-    formData.append('description', description);
-    formData.append('videoFile', videoFile);
-
+    formData.append('file', videoFile);
+    console.log('detail',name, title, videoFile )
     try {
       const response = await axios.post('http://3.110.132.203:3000/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}` 
+          'token': `${token}` 
         }
       });
       console.log(response.data); // Handle success response
@@ -36,6 +36,24 @@ const InsertVideo = () => {
       console.error('Error uploading video:', error.response?.data?.message || error.message);
     }
   };
+  useEffect(() => {
+    const getVideoName = async () => {
+      try {
+        const token = localStorage.getItem('token'); // Retrieve the token from local storage
+        const response = await axios.get('http://3.110.132.203:3000/user/get_video_name', {
+          headers: {
+            'token': `${token}`
+          }
+        });
+        setName(response.data.data.video_name);
+        console.log('name', response.data.data.video_name)
+      } catch (error) {
+        console.error('Error fetching videos:', error.response?.data?.message || error.message);
+      }
+    };
+    
+    getVideoName();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center">
@@ -57,20 +75,6 @@ const InsertVideo = () => {
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-600 text-sm font-medium mb-2" htmlFor="description">
-              Video Description
-            </label>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter the video description"
-              rows="4"
-              required
-            />
-          </div>
 
           <div className="mb-4">
             <label className="block text-gray-600 text-sm font-medium mb-2" htmlFor="videoFile">
