@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { saveAs } from 'file-saver';
 import BASE_URL from '../config';
 
 const ViewVideos = () => {
   const [videos, setVideos] = useState([]);
-  const [videoUrl, setVideoUrl] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(null); // Store the converted video URL
   const [selectedTypes, setSelectedTypes] = useState({});
   const [conversionTime, setConversionTime] = useState(null); // Final conversion time
   const [timer, setTimer] = useState(0); // Time passed in seconds
@@ -50,14 +51,15 @@ const ViewVideos = () => {
       setIsConverting(true); // Start conversion
       setTimer(0); // Reset timer
       const token = localStorage.getItem('token'); // Retrieve the token from local storage
-      const type = selectedTypes[video_id] || 'mp4'; // Get the selected type
+      const type = selectedTypes[video_id] || 'mp4'; 
+      setConversionTime(null)
+      setVideoUrl(null)
 
       const startTime = Date.now(); // Capture the start time
 
-      // Make sure the response is in blob format
       const response = await axios.post(
         `${BASE_URL}/convert`,
-        { video_id, type }, // Post data here
+        { video_id, type }, 
         {
           headers: {
             'token': `${token}`,
@@ -73,13 +75,22 @@ const ViewVideos = () => {
 
       // Convert response data to Blob and create a URL
       const videoBlob = new Blob([response.data], { type: 'video/mp4' });
-      const videoUrl = URL.createObjectURL(videoBlob); // Create a URL for the blob
+      const videoUrl = URL.createObjectURL(videoBlob); 
 
-      setVideoUrl(videoUrl); // Store the video URL in state
-      console.log('Video Blob URL:', videoUrl);
+      setVideoUrl(videoUrl); // Set video URL for playback and download
+      console.log('Converted Video Blob URL:', videoUrl);
     } catch (error) {
       console.error('Error converting video:', error.response?.data?.message || error.message);
-      setIsConverting(false); // Stop conversion on error
+      setIsConverting(false); 
+    }
+  };
+
+  // Function to handle downloading the converted video
+  const downloadConvertedVideo = () => {
+    if (videoUrl) {
+      saveAs(videoUrl, 'converted-video.mp4'); // Use FileSaver to download the converted video
+    } else {
+      alert('No video available to download!');
     }
   };
 
@@ -120,11 +131,21 @@ const ViewVideos = () => {
             </div>
           ))}
         </div>
+
         {videoUrl && (
-          <video controls width="600">
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+          <>
+            <video controls width="600" className="mt-6">
+              <source src={videoUrl} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            {/* Download button for the converted video */}
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300 mt-4"
+              onClick={downloadConvertedVideo}
+            >
+              Download Converted Video
+            </button>
+          </>
         )}
       </div>
     </div>
